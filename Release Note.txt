@@ -1,0 +1,228 @@
+18/03/2019
+- Added Motofil Rofin, Andatex, and Pallet6 (hydro+1_servo).
+
+01/03/2019
+- Added Nlight and ETS-C200
+
+12/11/2018
+- Added in LsrOn.cfs the management of "%LsPlc26.8", this bit confirm that for plc %TstP15 
+  is at 0. In this way is sure the next actions on%TstP15 can be executed properly.
+
+03/11/2018 v4.2.8 + Pipe v2.3
+- Update firmware version 34.10, included friction compensation
+- Added the second spindle management and alignement routine
+- Added Highyag cycles for 20mm.
+
+
+25/10/2018 V4.2.7 + P2.2
+- -3292.cfs bug fixed about "roundFlag" bit,it was always at 0 also if the pipe was 
+  rounded, added the conditions to identify the correct profile in case the pipe is along Y.
+- Spindle calibration now is always performed to ensure the center of the spindle and the center
+  of the pipe with respect to the spindle are compensated.
+- Added auto origin acquire for pipe.
+
+
+13-21/10/2018 V4.2.6 + P2.2
+- Added in user.plc safeties about jog movements,in case the operator moves
+ wrongly the head in pipe side;
+- Added "SafetyPipeOrig.cfs" and "SafePipeAxPos.cfs"; these two routines
+ check if the origin is setted correctly with respect to the position of the head in
+ that moment and with respect the position of the origin in that moment.
+- Bug fixed on "go to origin" button in "ManualApa" tab.
+- Added two errors about the capacitive sensore in "LsrTouch.cfs", in laser touch
+ now before execute the approch to the surface, there is a control on the value of capacitive sensor (mm)
+ if it is less than 8mm the cycle will give alarm and not move the Z axis; same way if the 
+ "LsrTouch.cfs" receive a setpoint less than 0.3mm.
+- Added calibraton on pipe if origin 19 is selected
+- Added "AutoAquire origin" for pipe, only if origin 19 is selected
+- Removed in "OverStoreSUB0.cfu" G153 G0 Z(trave_safe_z)
+- In G800 if condition , otherwise Z axis can wrong the offset of the position (added G180 P1 X(tr_x) Y(tr_y) Z(tr_z) C(VA2))
+- Graph_set_orig.cfs added the offset in case of pipe cutting in the origin parameters
+- CalPipe.plc and pages bug fixed, conflict on bit %CalPipe.General.3 and added button to reset 
+  the calibration parameters in case of wrong calibration(due to the wrong pipe installation).
+
+
+13/10/2018 V4.2.5 + P2.1
+- Modified -1800.cfs,Sel_Y3Z?cfs, cfpstart.cfp in order to have different
+ safeties level for pipe and plane machine
+- In main.plc added set alarm of axes 27,28,29,30 in case of some alarm comes from 
+  channel 0 or channel3. It avoid Z axis crash.
+- Added option in piercing page, save gas in function of distance, these changes are in -1800.cfs (L5) 
+  and -1153.cfs (in case of L0)
+- Found a conflict between two functions, return after pause and z up after pause, 
+  it has been fixed in fastR.plc by adding a condition on the automatic retrace command.
+
+10/10/2018 V4.2.4 + Pipe V2.0
+- Update -1806.cfs,plasma inc.cfs,getorix.cfs,getoriy.cfs,
+  main.plc,resmach.plc,restarT.plc to manage the two pallet level inside the machine.
+  In setlaser page there are two new option(enable two pallet level, offset second pallet)
+
+
+9/10/2018 V4.2.3 + Pipe V2.0
+- Gas system update, new gas.plc and added gasprop.plc.
+  Purging and gas management changed
+
+
+10-12/09/2018 V4.2.2 + Pipe V2.0
+--------------------------------
+- RegLsr.plc: Changed some part of jumping management. Now the distance from target where
+              must be enable the regulation and the K factor (gain) of jumping, is calculated
+              in base of the jumping space.
+              There are 3 zone, each of these zone have 2 parameters, Distance to enable the
+              regulation, and the gain of jump. 
+- Reg_check2.str: is a new page where you can find the parameters of jumping
+- NuovoSinottico.str: Only when it is selected the PROGRAM management, it is always visible
+                      the program counter.
+- Sheet control: Insert a LSRCostk56 that indicate the absolute quote of Z axis before X/Y 
+                 axes moving for sheet control
+- External pallet management: after return from safety position, the CNC goes in JOG mode.
+- Retrace function: now it is possible to move axes in retrace mode with [X+] and [X-] button on
+                    the remote controller.
+- STOP on remote control: now it works both to stop axes (hold) and in the return after pause management.
+- Return after pause: during back movement the gases are closed
+- Upgraded "UI menu fissi" to this version: 7_2_10_2. Inserted %ui39.1. This is setted when the CNC start
+  the reset procedure. It is used to put in emergency the CNC before CNC reset.
+
+
+
+15-31/08/2018 V4.2.1 + Pipe V2.0
+- LsrOn.cfs added M1210 in cut section, this because if the piercing is only outside the range
+  of capacitive sensor, regulation remains disabled.
+- Introduced in LsrTouch.cfs SYN AWAIT(%C122.0), because the M-function were not 
+  safe in pause condition.
+- Capacit.plc this file has been change to complete the nozzle brushing function.
+
+
+03/08/2018 V4.2.0 + Pipe V2.0
+- APA.CFS added JSR "graph_set_kine.cfs" to update angle in graph
+
+- Capacitive sensor supports variable range (at this moment insert 10,20);
+  modified -1800.cfs, LsrTouch.cfs, reglsr.plc, capacit.plc.
+  Calibration check page automatically shows the graph in funtion of the range
+  Added in SetLaser.str the parameter capacitive sensor range.
+- FastR.plc added other 5 linearization points for linearization. Linearization 
+  is in function of the range of the sensor, not fixed. 
+
+  Simulation: added in FastS.plc a simulation of an capacitive parabolic input,
+  this works with analog signal simultated with an external encoder. Added 
+  the tip touch signal simulated in function of the thickness; now is possible 
+  to test all capacitive sensor calibration and "calibration control" procedure.
+
+
+18/07/2018  V4.1.0 + p2.0
+
+- Added calibration cycles for pipe
+  TubeCalibration.cfs and spndleCalibration.cfs.
+  In 1000.pgm added the calibration routines
+- Plc added calpipe.plc and pipe.inc to prepare and support Iso cycles
+- Added calibration cycles pages 
+- Firmware Update Version 34.8 Jiten, in this update there are two parameters 
+  "Filter changes smoothing time costant 1 and 2" to allow a 
+  smooth changing between two different values of damping filter.
+
+
+
+09/07/2018
+- (UI menu fissi .: 7_1_0_8)
+- zoom bug fixed
+
+
+25/06/2018 V4.1.0 + p1.0
+- Added CHT pages and changed EXE folder (UI menu fissi .: 7_1_0_7)
+
+
+
+13/06/2018 v4.0.5 + v1.0
+- Added zoom managment for precitec head (foc_prec.plc,lsron.cfs)
+- bug in focal managment (no_prec4) fixed
+
+
+
+06/06/2018 V4.0.4 + v1.0
+- Added pipe managment (ax36 = W ch3,ax34 = Cr ch3 ,ax54 = Cs ch5)
+  During pipe cutting, is used dynamic syswide function beetween 
+  Y and W if gantry is along Y or X and W if gantry is along X.
+
+- In this version focal axis (ax9) is on ch0 and not on ch3)
+  this because W Ch3 is used for pipe cutting)
+
+- Added two parameters for jump, one is the maximum height for plane
+  machine, the other is for pipe.
+
+
+15/05/2018 v4.0.3
+- Graphic problem about "track" visualizzation solved.
+  Now machine contour is showed only in "list mode".
+- One Mainfast.plc for simulation (added function fastS.plc for simulation
+  fastR.plc for real machine)
+- Outdated files deleted
+- Removed channel 2, channel 4 and clean Iso folders
+- "Block-Search" bug solved; there was a simultaneous start on different 
+  channel of cnc; it musta start only on channel 0.
+- Trumpf resonator managment(trueres.plc, db_laser.str,etc) need to be tested
+
+
+23/04/2018 V4.0.2
+- Adapted piercing feed control to vrtc( lsron.cfs,reglsr.plc,iol.inc)
+  Added support variables for speed in Near table of vrtc
+  to relize the function. 
+- Added in res folder a notes document about cutomizable pictures for customer.
+
+
+23/04/2018 V4.0.1
+- Added highyag head(focal and capacitive)
+- defcn.app added structures head and capacitive
+
+
+13/04/2018 v4.0.0
+- New UI 7.1.0.6 kvara version (support graphics stretching)
+- New ISO base files organization
+- Removed some ISO and UI files not used
+- New organize shared memory (removed some variables not used, like oxy, waterjet acc.)
+- New VRTC management. Inserted VRTC data tables for each phase (PROBE, JUMP ecc.)
+- Added INCH management
+- Added APA management ONLY in simulation mode (see MainFast.PLC for SIMULATION)
+- Added check if record loaded exist in database
+- Fixed syncronization problem in M2108
+
+
+13/03/2018 v3.3.3
+-aggiunta la G800 con SYN appena dopo l'uscita dalla lsrOn.cfs
+
+
+11/03/2018 v3.3.2
+- Corretto bug lubrificazione 
+
+
+26/02/2018 v3.3.1
+- Inserito Event Logger
+
+
+07/02/2018
+-Aggiornato UsrIsoExt.dll per scrittura
+valori grafici in nspans etc...
+- Sicurezza su laser acceso se non in tolleranza
+
+
+06/02/2018
+- Aggiornato DynMng.plc
+col path per la ricerca delle nspans
+
+
+31/01/2018 V3.1
+- Aggiunto logger
+
+
+10/01/2018 V3.0
+- update regulation locked runtime during jump (reglaser.plc)
+- Z axis jerk at 0 during piercing movement (lsrOn.plc)
+- Function for fast limit switch setup (assi.plc)
+- SYN removed from G840,G650,G800 (THIS IS NOT TESTED)
+- Clean of Db_laser.str
+
+
+08/08/2017
+- Block Search: added in overstore cycle parameters copy
+- Added duty,frequency,power dynamic adjustment
+- Interface Changes
+ 
